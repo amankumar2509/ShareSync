@@ -16,12 +16,19 @@ app.set('views',path.join(__dirname,'/views'));
 app.set('view engine','ejs');
 
 
+app.get('/', (req, res) => {
+    // Render the index page
+    res.render('index');
+  });
+
 //routes
 
 const fileRoutes = require('./Routes/file');
 app.use('/api/files', fileRoutes);
 const showRoutes = require('./Routes/show');
-app.use('/files',showRoutes)
+app.use('/files',showRoutes);
+const downloadRoutes = require('./Routes/download');
+app.use('/files/download',downloadRoutes)
 
 
 app.listen(PORT,()=>{
