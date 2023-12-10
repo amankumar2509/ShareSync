@@ -11,14 +11,14 @@
 
 <body>
 
-    <img src="./logo.png" alt="Inshare logo" class="logo">
+    <img src="/img/logo.png" alt="Inshare logo" class="logo">
     <section class="upload-container">
         <form  action="/api/files" method="post" enctype="multipart/form-data" id="emailForm">
             <div class="drop-zone">
                 <div class="icon-container">
-                    <img src="file.svg" draggable="false" class="center" alt="File Icon">
-                    <img src="file.svg" draggable="false" class="left" alt="File Icon">
-                    <img src="file.svg" draggable="false" class="right" alt="File Icon">
+                    <img src="/img/file.svg" draggable="false" class="left" alt="File Icon">
+                    <img src="/img/file.svg" draggable="false" class="center" alt="File Icon">
+                    <img src="/img/file.svg" draggable="false" class="right" alt="File Icon">
                 </div>
                 <input type="file" id="fileInput">
                 <div class="title">Drop your Files here or, <span id="browseBtn">browse</span></div>
@@ -41,10 +41,10 @@
 
             <div class="input-container">
                 <input type="text" id="fileURL" readonly>
-                <img src="./copy-icon.svg" id="copyURLBtn" alt="copy to clipboard icon">
+                <img src="img/copy-icon.svg" id="copyURLBtn" alt="copy to clipboard icon">
             </div>
 
-            <p class="email-info">Or Send via Email</p>
+            <!-- <p class="email-info">Or Send via Email</p>
             <div class="email-container">
                 <form id="emailForm">
                     <div class="filed">
@@ -60,13 +60,13 @@
                         <button type="submit">Send</button>
                     </div>
                 </form>
-            </div>
+            </div> -->
         </div>
     </section>
     <div class="image-vector"></div>
     <div class="toast">Sample message</div>
     <!-- github fork button -->
-    <a href="https://github.com/ShivamJoker/inshare" class="github-corner"
+    <a href=" " class="github-corner"
         aria-label="View source on GitHub">
         <svg width="80" height="80" viewbox="0 0 250 250"
             style="fill:#131315c9; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
@@ -99,9 +99,10 @@
     
         const toast = document.querySelector(".toast");
     
-        const baseURL = "https://your-backend-url"; // Update this with your actual backend URL
+        const baseURL = "<%= baseURL %>";
+
         const uploadURL = `${baseURL}/api/files`; // Update this with your actual upload endpoint
-        const emailURL = `${baseURL}/api/files/send`; // Update this with your actual email endpoint
+      //  const emailURL = `${baseURL}/api/files/send`; // Update this with your actual email endpoint
     
         const maxAllowedSize = 100 * 1024 * 1024; // 100mb
     
@@ -187,8 +188,8 @@
             fileInput.value = "";
             status.innerText = "Uploaded";
     
-            emailForm[2].removeAttribute("disabled");
-            emailForm[2].innerText = "Send";
+            //emailForm[2].removeAttribute("disabled");
+            //emailForm[2].innerText = "Send";
             progressContainer.style.display = "none";
     
             const { file: url } = JSON.parse(res);
@@ -197,44 +198,44 @@
             fileURL.value = url;
         };
     
-        const handleEmailFormSubmit = (e) => {
-            e.preventDefault();
+        // const handleEmailFormSubmit = (e) => {
+        //     e.preventDefault();
     
-            emailForm[2].setAttribute("disabled", "true");
-            emailForm[2].innerText = "Sending";
+        //     emailForm[2].setAttribute("disabled", "true");
+        //     emailForm[2].innerText = "Sending";
     
-            const url = fileURL.value;
+        //     const url = fileURL.value;
     
-            const formData = {
-                uuid: url.split("/").splice(-1, 1)[0],
-                emailTo: emailForm.elements["to-email"].value,
-                emailFrom: emailForm.elements["from-email"].value,
-            };
-            console.log(formData);
-            fetch(emailURL, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formData),
-            })
-                .then((res) => res.json())
-                .then((data) => {
-                    if (data.success) {
-                        showToast("Email Sent");
-                        sharingContainer.style.display = "none";
-                    }
-                });
-        };
+        //     const formData = {
+        //         uuid: url.split("/").splice(-1, 1)[0],
+        //         emailTo: emailForm.elements["to-email"].value,
+        //         emailFrom: emailForm.elements["from-email"].value,
+        //     };
+        //     console.log(formData);
+        //     fetch(emailURL, {
+        //         method: "POST",
+        //         headers: {
+        //             "Content-Type": "application/json",
+        //         },
+        //         body: JSON.stringify(formData),
+        //     })
+        //         .then((res) => res.json())
+        //         .then((data) => {
+        //             if (data.success) {
+        //                 showToast("Email Sent");
+        //                 sharingContainer.style.display = "none";
+        //             }
+        //         });
+        // };
     
-        const showToast = (msg) => {
-            clearTimeout(toastTimer);
-            toast.innerText = msg;
-            toast.classList.add("show");
-            toastTimer = setTimeout(() => {
-                toast.classList.remove("show");
-            }, 2000);
-        };
+        // const showToast = (msg) => {
+        //     clearTimeout(toastTimer);
+        //     toast.innerText = msg;
+        //     toast.classList.add("show");
+        //     toastTimer = setTimeout(() => {
+        //         toast.classList.remove("show");
+        //     }, 2000);
+        // };
     </script>
     
 </body>

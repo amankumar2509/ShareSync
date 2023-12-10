@@ -18,7 +18,7 @@ app.set('view engine','ejs');
 
 app.get('/', (req, res) => {
     // Render the index page
-    res.render('index');
+    res.render('index',{ baseURL: process.env.APP_BASE_URL });
   });
 
 //routes
