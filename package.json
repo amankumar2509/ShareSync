@@ -5,11 +5,12 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
+    "build": "echo 'No build step needed'",
     "dev": "nodemon server.js",
     "server": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Aman",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
