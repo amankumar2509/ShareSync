@@ -3,6 +3,9 @@ const app=express();
 const connectDB=require('./config/db');
 const path = require('path'); 
 const cors = require('cors');
+const cron= require('node-cron');
+const cleanupFiles = require('./fileCleanup');
+
 
 
 
@@ -38,6 +41,9 @@ app.use('/files',showRoutes);
 const downloadRoutes = require('./Routes/download');
 app.use('/files/download',downloadRoutes)
 
+//crons
+
+cron.schedule('0 0 * * *', cleanupFiles);
 
 app.listen(PORT,()=>{
     console.log(`listening on port ${PORT}`);
