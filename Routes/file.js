@@ -9,18 +9,43 @@ router.get('/', (req, res) => {
   res.render('index');
 });
 
-let storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, 'uploads/') ,
+// let storage = multer.diskStorage({
+//   destination: (req, file, cb) => cb(null, 'uploads/') ,
+
+
+//   filename: (req, file, cb) => {
+//       const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1E9)}${path.extname(file.originalname)}`;
+//             cb(null, uniqueName)
+//   } ,
+// });
+
+// let upload = multer({
+//   storage,
+//   limits: { fileSize: 1000000 * 100 }, 
+// }).single("myfile");
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = 'uploads/';
+    
+    // Ensure the directory exists
+    fs.mkdir(uploadPath, { recursive: true }, (err) => {
+      if (err) {
+        return cb(err, null);
+      }
+      cb(null, uploadPath);
+    });
+  },
   filename: (req, file, cb) => {
-      const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1E9)}${path.extname(file.originalname)}`;
-            cb(null, uniqueName)
-  } ,
+    const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1E9)}${path.extname(file.originalname)}`;
+    cb(null, uniqueName);
+  },
 });
 
-let upload = multer({
+const upload = multer({
   storage,
   limits: { fileSize: 1000000 * 100 }, 
 }).single("myfile");
+
 
 router.post('/', (req, res) => {
   upload(req, res, async (err) => {
