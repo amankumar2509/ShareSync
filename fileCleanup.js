@@ -1,42 +1,45 @@
 // fileCleanup.js
 
+const mongoose = require('mongoose');
+const File = require('./models/file'); 
 const path = require('path');
-const fs = require('fs');
+const fs = require('fs/promises');
 
-const cleanupFiles = () => {
-  console.log('Running file deletion task...');
-  const uploadDir = path.join(__dirname, 'uploads');
+const cleanupFiles = async () => {
+  console.log('Running file cleanup task...');
 
-  fs.readdir(uploadDir, (err, files) => {
-    if (err) {
-      console.error('Error reading directory:', err);
-      return;
-    }
-
+  try {
     const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
-    files.forEach((file) => {
-      const filePath = path.join(uploadDir, file);
-
-      fs.stat(filePath, (statErr, stats) => {
-        if (statErr) {
-          console.error('Error getting file stats:', statErr);
-          return;
-        }
-
-        if (stats.birthtime < twentyFourHoursAgo) {
-          // Delete the file
-          fs.unlink(filePath, (unlinkErr) => {
-            if (unlinkErr) {
-              console.error('Error deleting file:', unlinkErr);
-            } else {
-              console.log(`Deleted file: ${file}`);
-            }
-          });
-        }
-      });
+    
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
     });
-  });
+
+    // Find files older than 24 hours in MongoDB
+    const oldFiles = await File.find({ createdAt: { $lt: twentyFourHoursAgo } });
+
+    // Delete files from MongoDB and also remove the corresponding files from disk
+    await Promise.all(
+      oldFiles.map(async (file) => {
+        const filePath = path.join(__dirname, 'uploads', file.filename);
+
+        // Delete the file from disk
+        await fs.unlink(filePath);
+
+        // Delete the file document from MongoDB
+        await File.findByIdAndDelete(file._id);
+      })
+    );
+
+    console.log('File cleanup completed.');
+  } catch (error) {
+    console.error('Error during file cleanup:', error);
+  } finally {
+    // Disconnect from MongoDB
+    await mongoose.disconnect();
+  }
 };
 
 module.exports = cleanupFiles;
